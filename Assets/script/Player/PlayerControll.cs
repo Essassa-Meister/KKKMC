@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(UnityEngine.CharacterController))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerControll : MonoBehaviour
 {
     [Header("移動")]
     [SerializeField] private float walkSpeed = 3.5f;

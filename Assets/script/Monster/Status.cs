@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Status: MonoBehaviour
@@ -9,21 +10,30 @@ public class Status: MonoBehaviour
     public float GiveExp = 10;
     public float maxStamina = 20; // スタミナの最大値
     public float currentStamina = 20; // スタミナの現在値
+
+    // (currentHp, maxHp)
+    public event Action<float, float> OnHpChanged;
+
     void Start()
     {
         maxHp += 1.5f * Level;
         currentHp = maxHp;
         maxStamina += 1.5f * Level;
         currentStamina = maxStamina;
+        NotifyHp();
     }
+
     public void TakeDamage(float damage)
     {
         currentHp -= damage;
-        if(currentHp < 0)
+        currentHp = Mathf.Max(currentHp, 0f);
+        NotifyHp();
+        if (currentHp <= 0f)
         {
             Die();
         }
     }
+
     public void Experience(float exp)
     {
         nextToLvel -= exp;
@@ -31,11 +41,17 @@ public class Status: MonoBehaviour
         {
             Level++;
             nextToLvel += 20f * Level;
-            
         }
     }
+
+    void NotifyHp()
+    {
+        OnHpChanged?.Invoke(currentHp, maxHp);
+    }
+
     public void Die()
     {
+        NotifyHp();
         Destroy(gameObject);
     }
 }

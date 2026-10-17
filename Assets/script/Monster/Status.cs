@@ -9,10 +9,21 @@ public class Status: MonoBehaviour
     public float nextToLvel = 20;
     public float GiveExp = 10;
     public float maxStamina = 20; // スタミナの最大値
-    public float currentStamina = 20; // スタミナの現在値
+    [SerializeField] private float _currentStamina = 20; // スタミナの現在値
+    public float currentStamina
+    {
+        get => _currentStamina;
+        set
+        {
+            _currentStamina = Mathf.Clamp(value, 0, maxStamina);
+            NotifyStamina();
+        }
+    }
 
     // (currentHp, maxHp)
     public event Action<float, float> OnHpChanged;
+    // (currentStamina, maxStamina)
+    public event Action<float, float> OnStaminaChanged;
 
     void Start()
     {
@@ -21,6 +32,7 @@ public class Status: MonoBehaviour
         maxStamina += 1.5f * Level;
         currentStamina = maxStamina;
         NotifyHp();
+        NotifyStamina();
     }
 
     public void TakeDamage(float damage)
@@ -44,14 +56,36 @@ public class Status: MonoBehaviour
         }
     }
 
+    // スタミナを消費する
+    public void UseStamina(float amount)
+    {
+        currentStamina -= amount;
+        currentStamina = Mathf.Max(currentStamina, 0f);
+        NotifyStamina();
+    }
+
+    // スタミナを回復する
+    public void RestoreStamina(float amount)
+    {
+        currentStamina += amount;
+        currentStamina = Mathf.Min(currentStamina, maxStamina);
+        NotifyStamina();
+    }
+
     void NotifyHp()
     {
         OnHpChanged?.Invoke(currentHp, maxHp);
     }
 
+    void NotifyStamina()
+    {
+        OnStaminaChanged?.Invoke(currentStamina, maxStamina);
+    }
+
     public void Die()
     {
         NotifyHp();
+        NotifyStamina();
         Destroy(gameObject);
     }
 }

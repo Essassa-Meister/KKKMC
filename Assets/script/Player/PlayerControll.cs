@@ -79,20 +79,12 @@ public class PlayerControll : MonoBehaviour
     private void DrainStamina()
     {
         if (status == null) return;
-        status.currentStamina -= staminaDrainPerSecond * Time.deltaTime;
-        if (status.currentStamina <= 0f)
-        {
-            status.currentStamina = 0f;
-        }
+        status.UseStamina(staminaDrainPerSecond * Time.deltaTime);
     }
 
     private void RecoverStamina()
     {
         if (status == null) return;
-        status.currentStamina += staminaRecoverPerSecond * Time.deltaTime;
-        if (status.currentStamina > status.maxStamina)
-        {
-            status.currentStamina = status.maxStamina;
-        }
+        status.RestoreStamina(staminaRecoverPerSecond * Time.deltaTime);
     }
 }

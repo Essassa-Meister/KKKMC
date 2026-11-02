@@ -110,10 +110,13 @@ public class Trap : MonoBehaviour
         }
 
         // PlayerTrapPlacer の設置数をデクリメント（存在する場合のみ）
-        GameObject placer = FindGameObjectWithTag("Player");
-         placer.GetComponent<PlaceTrap>().currentTrapCount--;
+        var placer = FindObjectOfType<PlayerTrapPlacer>();
+        if (placer != null)
+        {
+            if (placer.currentTrapCount > 0)
+                placer.currentTrapCount--;
+        }
 
-    
         Destroy(gameObject);
     }
 
